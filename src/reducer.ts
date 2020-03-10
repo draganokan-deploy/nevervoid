@@ -1,7 +1,5 @@
 import { useState } from "react"
 
-// import { createContext, useContext } from 'react'
-
 type AppState = {
     count: number
     input: string
@@ -12,19 +10,13 @@ const initialAppState: AppState = {
     input: ""
 }
 
-// type Actions<S> = {
-
-// }
-
-// const AppContext = createContext<AppState>(initialAppState)
-
 const __state: [AppState] = [initialAppState]
 type RegisteredDispatcher = React.Dispatch<React.SetStateAction<AppState>> & {__registeredDispatcher: boolean}
 const __observers: RegisteredDispatcher[] = []
 
 export const useAppState = () => {
 
-    const [_, _setState] = useState(initialAppState);
+    const [, _setState] = useState(initialAppState);
     const _secureSetState = (_setState as unknown as RegisteredDispatcher);
     if (!_secureSetState.__registeredDispatcher) {
         _secureSetState.__registeredDispatcher = true;
@@ -33,41 +25,30 @@ export const useAppState = () => {
     const updateState = (change: Partial<AppState>) => {
         __state[0] = {...__state[0], ...change}
         __observers.forEach(secureSetState => {
-            const setState = secureSetState as unknown as React.Dispatch<React.SetStateAction<AppState>>
-            setState(__state[0])
+            secureSetState(__state[0])
         })
     }
 
     const state = __state[0]
 
-    const _log = () => {
-        // console.log(JSON.stringify(state, null, 4))
-    }
-
     const actions = {
         counter: {
             increment: () => {
-                _log()
                 updateState({ count: state.count+1 })
             },
             decrement: () => {
-                _log()
                 updateState({ count: state.count-1 })
             },
             reset: () => {
-                _log()
                 updateState({ count: 0 })
             }
         },
         input: {
             update: (val: string) => {
-                _log()
                 updateState({ input: val })
             }
         },
         randomize: () => {
-            _log()
-
             const rndLength: number = Math.floor(Math.random()*6)+2
             let str = ""
             for (let i=0; i<rndLength; i++) {
