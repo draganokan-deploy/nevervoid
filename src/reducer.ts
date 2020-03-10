@@ -11,20 +11,20 @@ const initialAppState: AppState = {
 }
 
 const __state: [AppState] = [initialAppState]
-type RegisteredDispatcher = React.Dispatch<React.SetStateAction<AppState>> & {__registeredDispatcher: boolean}
-const __observers: RegisteredDispatcher[] = []
+type RegisteredSetter = React.Dispatch<React.SetStateAction<AppState>> & {__registered: boolean}
+const __registeredSetters: RegisteredSetter[] = []
 
 export const useAppState = () => {
 
-    const [, _setState] = useState(initialAppState);
-    const _registeredSetState = (_setState as unknown as RegisteredDispatcher);
-    if (!_registeredSetState.__registeredDispatcher) {
-        _registeredSetState.__registeredDispatcher = true;
-        __observers.push(_registeredSetState)
+    const [, stateSetter] = useState(initialAppState);
+    const setter = (stateSetter as unknown as RegisteredSetter);
+    if (!setter.__registered) {
+        setter.__registered = true;
+        __registeredSetters.push(setter)
     }
     const updateState = (change: Partial<AppState>) => {
         __state[0] = {...__state[0], ...change}
-        __observers.forEach(registeredDispatcher => {
+        __registeredSetters.forEach(registeredDispatcher => {
             registeredDispatcher(__state[0])
         })
     }
