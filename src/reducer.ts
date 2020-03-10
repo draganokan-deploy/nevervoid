@@ -17,7 +17,7 @@ const __registeredSetters: RegisteredSetter[] = []
 export const useAppState = () => {
 
     const [, stateSetter] = useState(initialAppState);
-    const setter = (stateSetter as unknown as RegisteredSetter);
+    const setter = (stateSetter as RegisteredSetter);
     if (!setter.__registered) {
         setter.__registered = true;
         __registeredSetters.push(setter)
