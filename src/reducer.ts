@@ -10,7 +10,7 @@ const initialAppState: AppState = {
     input: ""
 }
 
-const __state: [AppState] = [initialAppState]
+var __state: AppState = initialAppState
 type RegisteredSetter = React.Dispatch<React.SetStateAction<AppState>> & {__registered: boolean}
 const __registeredSetters: RegisteredSetter[] = []
 
@@ -23,13 +23,13 @@ export const useAppState = () => {
         __registeredSetters.push(setter)
     }
     const updateState = (change: Partial<AppState>) => {
-        __state[0] = {...__state[0], ...change}
+        __state = {...__state, ...change}
         __registeredSetters.forEach(registeredDispatcher => {
-            registeredDispatcher(__state[0])
+            registeredDispatcher(__state)
         })
     }
 
-    const state = __state[0]
+    const state = __state
 
     const actions = {
         counter: {
