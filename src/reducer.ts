@@ -17,15 +17,15 @@ const __observers: RegisteredDispatcher[] = []
 export const useAppState = () => {
 
     const [, _setState] = useState(initialAppState);
-    const _secureSetState = (_setState as unknown as RegisteredDispatcher);
-    if (!_secureSetState.__registeredDispatcher) {
-        _secureSetState.__registeredDispatcher = true;
-        __observers.push(_secureSetState)
+    const _registeredSetState = (_setState as unknown as RegisteredDispatcher);
+    if (!_registeredSetState.__registeredDispatcher) {
+        _registeredSetState.__registeredDispatcher = true;
+        __observers.push(_registeredSetState)
     }
     const updateState = (change: Partial<AppState>) => {
         __state[0] = {...__state[0], ...change}
-        __observers.forEach(secureSetState => {
-            secureSetState(__state[0])
+        __observers.forEach(registeredDispatcher => {
+            registeredDispatcher(__state[0])
         })
     }
 
